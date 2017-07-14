@@ -1,0 +1,90 @@
+---
+
+- name: create the partition table for {{ oracle_vg }}
+  parted: 
+    device: "{{ oracle_pv }}"
+    number: 1
+    label: gpt
+    part_end: 100%
+    state: present
+  when: oracle_pv is defined
+
+- name: create the volume group
+  lvg:
+    vg: "{{ oracle_vg }}"
+    pvs: "{{ oracle_pv }}1"
+    state: present
+  when: oracle_vg is defined
+  
+- name: create the oracle binary fs lv
+  lvol: 
+    vg: "{{ oracle_vg }}"
+    lv: "{{ oracle_ora_bin_lv }}"
+    size: 6G
+    state: present
+    
+- name: create the oracle data fs lv
+  lvol:
+    vg: "{{ oracle_vg }}"
+    lv: "{{ oracle_ora_data_lv }}"
+    size: 100%FREE
+    shrink: false
+    state: present
+  
+- name: create the oracle filesystems 
+  filesystem: fstype="{{ oracle_fstype }}" dev="/dev/{{ oracle_vg }}/{{ item }}"
+  with_items:
+    - "{{ oracle_ora_bin_lv }}"
+    - "{{ oracle_ora_data_lv }}"
+
+- name: create the mountpoints
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "u=rwx,g=rwx,o=rx"
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+  with_items:
+    - "{{ oracle_ora_data_fs }}"
+    - "{{ oracle_ora_bin_fs }}"
+    
+- name: create and mount oracle filesystems fs
+  mount:
+  args:
+        path: "{{ item.mountpoint }}"
+        src: "/dev/{{ oracle_vg }}/{{ item.lv }}"
+        boot: yes
+        state: mounted
+        fstype: "{{ oracle_fstype }}"
+  with_items:
+    - { lv: "{{ oracle_ora_data_lv }}", mountpoint: "{{ oracle_ora_data_fs }}" }
+    - { lv: "{{ oracle_ora_bin_lv }}", mountpoint: "{{ oracle_ora_bin_fs }}" }
+    
+- name: set the ownerships oracle bin fs
+  file:
+    path: "{{ item }}"
+    owner: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    mode: "u=rwx,g=rwx,o=rx"
+    recurse: yes
+  with_items: 
+    - "{{ oracle_ora_bin_fs }}"
+    - "{{ oracle_ora_data_fs }}"
+    
+# end of spectrum changes
+
+- name: create the oracle installation path
+  file:
+    mode: 0755
+    path: "{{ oracle_path }}"
+    state: directory
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+
+- name: chown the oracle installer directory to the oracle user
+  file:
+    group: "{{ oracle_group }}"
+    owner: "{{ oracle_user }}"
+    path: "{{ oracle_tmp }}/database"
+    state: directory
+    recurse: yes

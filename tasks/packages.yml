@@ -1,0 +1,35 @@
+---
+
+- name: install dev tools
+  yum: name="@Development tools" state=present
+
+- name: install x86 oracle dependencies
+  yum: name={{ item }} state=present
+  with_items:
+    - binutils.x86_64
+    - compat-libstdc++-33.x86_64
+    - compat-libstdc++-33.i686
+    - elfutils-libelf.x86_64
+    - elfutils-libelf-devel.x86_64
+    - expat.x86_64 
+    - gcc.x86_64
+    - gcc-c++.x86_64
+    - glibc.i686
+    - glibc.x86_64
+    - glibc-common
+    - glibc-devel
+    - glibc-headers
+    - libaio.x86_64
+    - libaio.i686
+    - libaio-devel.i686
+    - libaio-devel.x86_64
+    - libgcc.i686
+    - libgcc.x86_64
+    - libstdc++.x86_64
+    - libstdc++.i686
+    - libstdc++-devel
+    - make
+    - numactl
+    - ksh
+    - sysstat.x86_64
+    - xorg-x11-xauth.x86_64
