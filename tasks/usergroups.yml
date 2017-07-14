@@ -1,0 +1,26 @@
+---
+
+- name: create initial groups for the oracle user
+  group: name={{ item }} state=present
+  with_items:
+    - "{{ oracle_group }}"
+    - "{{ oracle_dba_group }}"
+
+- name: create oracle user
+  user:
+    name: "{{ oracle_user }}"
+    group: "{{ oracle_group }}"
+    groups: "{{ oracle_dba_group }}"
+    home: /home/{{ oracle_user }}
+    shell: /bin/bash
+    password: "{{ oracle_pass }}"
+    append: yes
+    
+- name: set oracle user environment
+  lineinfile: dest=/home/{{ oracle_user }}/.bashrc state=present line="{{ item }}"
+  with_items:
+    - "export ORACLE_BASE={{ ora_user_env.ORACLE_BASE }}"
+    - "export ORACLE_SID={{ ora_user_env.ORACLE_SID }}"
+    - "export ORACLE_HOME={{ ora_user_env.ORACLE_HOME }}"
+    - "export PATH=$PATH:$ORACLE_HOME/bin"
+    - "export NLS_LANG={{ ora_user_env.NLS_LANG }}"

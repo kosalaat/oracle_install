@@ -1,0 +1,5 @@
+---
+
+- name: unzip installer
+  unarchive: src="{{ item }}" dest="{{ oracle_tmp }}" remote_src=false keep_newer=true
+  with_items: oracle_images
