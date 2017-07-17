@@ -1,22 +1,26 @@
 
 ---
 
-oracle_version: 11.2.0 
+oracle_version: 11.2.0
+
+# Oracle Editions avaialble: EE, SEONE, SE
+oracle_edition: EE
+
+# installation mode. Avaialable modes are : INSTALL_DB_SWONLY, INSTALL_DB_AND_CONFIG
+install_mode: INSTALL_DB_SWONLY
 
 oracle_hostname: "{{ inventory_hostname }}"
 
 # location for temporary installation files
 oracle_tmp: /tmp/oracle
 
-oracle_path: /u01/app/
+oracle_path: /u01/app
 
 oracle_db_home: ora_1
 
-oracle_home: "{{ oracle_path }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
+oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
 oracle_db_name: db
-
-# ORACLE_HOME basename, {{ oracle_path }}/product/11.2.0/{{ oracle_db_home }}
 
 # initial db user
 oracle_db_user: oracle
@@ -27,7 +31,7 @@ oracle_db_pass: password
 # password for the sysdba
 oracle_db_syspass: password
 
-oracle_db_mem: "512"
+oracle_db_mem: "400"
 
 oracle_user: oracle
 
@@ -47,17 +51,18 @@ oracle_pv: /dev/sdb
 
 oracle_vg: oravg
 
-oracle_ora_bin_lv: orabinlv
+oracle_bin_lv: orabinlv
 
-oracle_ora_bin_fs: "{{ oracle_path }}/oracle"
+oracle_bin_fs: "{{ oracle_path }}/oracle"
 
-oracle_base: "{{ oracle_ora_bin_fs }}"
+oracle_base: "{{ oracle_bin_fs }}"
 
-oracle_ora_data_lv: oradatalv
+oracle_data_lv: oradatalv
 
-oracle_ora_data_fs: "{{ oracle_path }}/data"
+oracle_data_fs: "{{ oracle_path }}/data"
 
-sc_oracle_fstype: xfs
+#FSTYPE for Oracle filesystems.
+oracle_fstype: xfs
 
-
-
+# Whether to start Oracle Enterprise Manager DBconsole
+oracle_em: no

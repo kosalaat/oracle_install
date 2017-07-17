@@ -2,25 +2,38 @@
 
 - name: check if oracle has already been installed
   command: grep -q "^{{ oracle_db_name }}:" /etc/oratab
-    ignore_errors: yes
+  ignore_errors: yes
   register: oracle_installed
   failed_when: oracle_installed.rc == 0
+
+- name: set the hostname
+  hostname: name="{{ inventory_hostname }}"
+
+- name: check for the pv for oravg
+  stat: path="{{ oracle_pv }}"
+  register: pv
+
+- include: usergroups.yml
+
+- include: filesystems.yml
+  when: pv.stat.isblk is defined
+
+- name: check enough free space to continue 
+  assert:
+    that:
+      - item.mount == "{{ oracle_bin_fs }}" and item.size_available < 5368709120
+      - item.mount == "{{ oracle_data_fs }}" and item.size_available < 2147483648
+      - item.mount == "{{ oracle_tmp }}" and item.size_available < 5368709120
+  with_items: "{{ ansible_mounts }}"
+  ignore_errors: yes
 
 - include: packages.yml
 
 - name: make sure the installer directory exists
   stat: path={{ oracle_tmp }}/database
-  register: install_dir
+  register: install_d ir
 
 - include: copy_archives.yml
-
-- name: make sure the installer directory exists
-  stat: path={{ oracle_tmp }}/database
-  register: install_dir
-  failed_when: not install_dir.stat.exists or not install_dir.stat.isdir
-
-- name: set the hostname
-  hostname: "{{ inventory_hostname }}"
 
 - include: prereqs.yml
 
@@ -31,10 +44,6 @@
 - name: oracle-recommended selinux
   selinux: policy=targeted state=disabled
 
-- include: usergroups.yml    
-
-- include: filesystems.yml
-
 - name: compose the oracle automated installer settings
   template:
     src: db_install.rsp.{{ oracle_version }}.j2
@@ -42,33 +51,4 @@
     owner: "{{ oracle_user }}"
     group: "{{ oracle_group }}"
 
-- name: install oracle
-  become: yes
-  become_user : "{{ oracle_user }}"
-  environment: ora_user_env
-  command: 
-  args: 
-    executable: '{{ oracle_tmp }}/database/runInstaller -silent -force {{ sc_oracle_ignore_prereqs }} -responseFile {{ oracle_tmp }}/db_install.rsp' 
-    creates: "{{ oracle_home }}/bin/sqlplus"
-
-- name: wait for orainstRoot.sh
-  wait_for: path={{ oracle_path }}/oraInventory/orainstRoot.sh state=present timeout=600
-  msg: Unable to find orainstRoot.sh!!
-
-- name: general oracle post-installation
-  command: "{{ oracle_path }}/oraInventory/orainstRoot.sh"
-
-- name: wait for root.sh
-  wait_for: path={{ oracle_home }}/root.sh state=present timeout=600
-  msg: Unable to find root.sh!!
-  
-- name: db-specific oracle post-installation
-  command: "{{ ora_user_env.ORACLE_HOME }}/root.sh"
-
-- name: start the enterprise manager web console
-  become: yes
-  become_user : "{{ oracle_user }}"
-  environment: ora_user_env
-  command: "{{ oracle_home }}/bin/emctl start dbconsole"
-  ignore_errors: yes
-
+- include: oracle.yml

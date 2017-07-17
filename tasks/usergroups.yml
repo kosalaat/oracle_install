@@ -21,6 +21,7 @@
   with_items:
     - "export ORACLE_BASE={{ ora_user_env.ORACLE_BASE }}"
     - "export ORACLE_SID={{ ora_user_env.ORACLE_SID }}"
+    - "export ORACLE_UNQNAME={{ ora_user_env.ORACLE_UNQNAME }}"
     - "export ORACLE_HOME={{ ora_user_env.ORACLE_HOME }}"
     - "export PATH=$PATH:$ORACLE_HOME/bin"
     - "export NLS_LANG={{ ora_user_env.NLS_LANG }}"
