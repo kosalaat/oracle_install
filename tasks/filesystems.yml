@@ -78,7 +78,7 @@
 - name: create the oracle installation path
   file:
     mode: 0755
-    path: "{{ oracle_path }}"
+    path: "{{ oracle_base }}"
     state: directory
     group: "{{ oracle_group }}"
     owner: "{{ oracle_user }}"
