@@ -1,16 +1,27 @@
 ---
 
+- name: check for the pv for {{ oracle_vg }}
+  stat: path="{{ oracle_pv }}"
+  register: pv
+
+- name: check for the volume group
+  command: "vgs {{ oracle_vg }}"
+  ignore_errors: yes
+  register: vg  
+
 - name: create the partition table for "{{ oracle_vg }}"
   command: parted -s "{{ oracle_pv }}" mklabel gpt mkpart oravg 1G 100% set 1 lvm on quit 
   args:
     creates: "{{ oracle_pv }}1"
+  when: pv | success and pv.stat.isblk is defined and vg | failed
 
 - name: create the volume group
   lvg:
     vg: "{{ oracle_vg }}"
     pvs: "{{ oracle_pv }}1"
     state: present
-  when: oracle_vg is defined
+  when: oracle_vg is defined and vg.rc != 0
+  ignore_errors: yes # in case we want to use an exisitng VG. 
   
 - name: create the oracle binary fs lv
   lvol: 
@@ -21,7 +32,7 @@
   with_items:
     - { lv: "{{ oracle_bin_lv }}", size: 6G }
     - { lv: "{{ oracle_data_lv }}", size: +100%FREE }
-      
+
 - name: create the oracle filesystems 
   filesystem: fstype="{{ oracle_fstype }}" dev="/dev/{{ oracle_vg }}/{{ item }}"
   with_items:

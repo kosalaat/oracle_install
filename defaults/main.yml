@@ -62,7 +62,7 @@ oracle_data_lv: oradatalv
 oracle_data_fs: "{{ oracle_path }}/data"
 
 #FSTYPE for Oracle filesystems.
-oracle_fstype: xfs
+oracle_fstype: ext4
 
 # Whether to start Oracle Enterprise Manager DBconsole
 oracle_em: no

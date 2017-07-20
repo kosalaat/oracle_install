@@ -9,14 +9,9 @@
 - name: set the hostname
   hostname: name="{{ inventory_hostname }}"
 
-- name: check for the pv for oravg
-  stat: path="{{ oracle_pv }}"
-  register: pv
-
 - include: usergroups.yml
 
 - include: filesystems.yml
-  when: pv.stat.isblk is defined
 
 - name: check enough free space to continue 
   assert:
