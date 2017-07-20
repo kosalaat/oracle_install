@@ -14,19 +14,13 @@ oracle_hostname: "{{ inventory_hostname }}"
 # location for temporary installation files
 oracle_tmp: /tmp/oracle
 
-oracle_path: /u01/app
+oracle_base: /u01/app
 
 oracle_db_home: ora_1
 
-oracle_home: "{{ oracle_base }}/product/{{ oracle_version }}/{{ oracle_db_home }}"
+oracle_home: "{{ oracle_base }}/oracle/product/{{ oracle_version }}/{{ oracle_db_home }}"
 
 oracle_db_name: db
-
-# initial db user
-oracle_db_user: oracle
-
-# password for the initial db user
-oracle_db_pass: password
 
 # password for the sysdba
 oracle_db_syspass: password
@@ -53,13 +47,11 @@ oracle_vg: oravg
 
 oracle_bin_lv: orabinlv
 
-oracle_bin_fs: "{{ oracle_path }}/oracle"
-
-oracle_base: "{{ oracle_bin_fs }}"
+oracle_bin_fs: "{{ oracle_base }}/oracle"
 
 oracle_data_lv: oradatalv
 
-oracle_data_fs: "{{ oracle_path }}/data"
+oracle_data_fs: "{{ oracle_base }}/data"
 
 #FSTYPE for Oracle filesystems.
 oracle_fstype: ext4

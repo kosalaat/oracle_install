@@ -1,24 +1,32 @@
 ---
 
 - name: install oracle
-  become: yes
-  become_user : "{{ oracle_user }}"
-  shell: '{{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp 2>{{ oracle_tmp }}/stderr.err >{{ oracle_tmp }}/stdout.out ; sleep 30; while true; do c=$(ps -ef | grep -v grep | grep db_install.rsp | grep java | wc -l); [ $c -eq 0 ] && break; sleep 10; done' 
+#  become: yes
+#  become_user : "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}"
+  shell: |
+    su - {{ oracle_user }} -c "{{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/stderr.err >{{ oracle_tmp }}/stdout.out
+    sleep 30
+    while true
+    do 
+      c=$(ps -ef | grep -v grep | grep db_install.rsp | grep java | wc -l)
+      [ $c -eq 0 ] && break
+      sleep 10
+    done
   args:
+    executable: /bin/bash
     creates: "{{ oracle_home }}/bin/sqlplus"
 
 - name: wait for orainstRoot.sh
   wait_for: 
-    path: "{{ oracle_bin_fs }}/oraInventory/orainstRoot.sh"
-    timeout: 600
+    path: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
 
 - name: general oracle post-installation
-  command: "{{ oracle_bin_fs }}/oraInventory/orainstRoot.sh"
+  command: "{{ oracle_base }}/oraInventory/orainstRoot.sh"
 
 - name: wait for root.sh
   wait_for: 
     path: "{{ oracle_home }}/root.sh"
-    timeout: 600
   
 - name: db-specific oracle post-installation
   command: "{{ oracle_home }}/root.sh"
@@ -30,7 +38,7 @@
 - name: start the enterprise manager web console
   become: yes
   become_user : "{{ oracle_user }}"
-  environment: ora_user_env
+  environment: "{{ ora_user_env }}" 
   command: "{{ oracle_home }}/bin/emctl start dbconsole"
   ignore_errors: yes
   when: oracle_em
