@@ -43,3 +43,14 @@
   ignore_errors: yes
   when: oracle_em
 
+- name: start the listener 
+  become: yes
+  become_user : "{{ oracle_user }}"
+  environment: "{{ ora_user_env }}" 
+  command: "{{ oracle_home }}/bin/lsnrctl start"
+
+- name: open the listener port
+  firewalld: port=5106/tcp state=enabled permanent=yes
+
+- name: restart firewalld
+  service: name=firewalld state=restarted

@@ -13,14 +13,15 @@
 
 - include: filesystems.yml
 
-- name: check enough free space to continue 
-  assert:
-    that:
-      - item.mount == "{{ oracle_bin_fs }}" and item.size_available < 5368709120
-      - item.mount == "{{ oracle_data_fs }}" and item.size_available < 2147483648
-      - item.mount == "{{ oracle_tmp }}" and item.size_available < 5368709120
-  with_items: "{{ ansible_mounts }}"
-  ignore_errors: yes
+# INFO: not working for the moment.
+# - name: check enough free space to continue 
+#   assert:
+#     that:
+#       - item.mount == "{{ oracle_bin_fs }}" and item.size_available < 5368709120
+#       - item.mount == "{{ oracle_data_fs }}" and item.size_available < 2147483648
+#       - item.mount == "{{ oracle_tmp }}" and item.size_available < 5368709120
+#   with_items: "{{ ansible_mounts }}"
+#   ignore_errors: yes
 
 - include: packages.yml
 
