@@ -1,15 +1,16 @@
 ---
 
 - name: create initial groups for the oracle user
-  group: name={{ item }} state=present
+  group: name={{ item.name }} gid={{ item.id }} state=present
   with_items:
     - "{{ oracle_group }}"
     - "{{ oracle_dba_group }}"
 
 - name: create oracle user
   user:
-    name: "{{ oracle_user }}"
-    group: "{{ oracle_group }}"
+    name: "{{ oracle_user.name }}"
+    group: "{{ oracle_group.name }}"
+    uid: "{{ oracle_user.id }}"
     groups: "{{ oracle_dba_group }}"
     home: /home/{{ oracle_user }}
     shell: /bin/bash

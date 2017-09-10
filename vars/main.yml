@@ -7,3 +7,9 @@ ora_user_env:
   ORACLE_UNQNAME: "{{ oracle_db_name }}"
   ORACLE_HOME: "{{ oracle_home }}"
   NLS_LANG: "American_America.UTF8"
+
+11201images:
+    - "{{ oracle_installer_path }}/linux.x64_11gR2_database_1of2.zip"
+    - "{{ oracle_installer_path }}/linux.x64_11gR2_database_2of2.zip"
+12201images:
+    - "{{ oracle_installer_path }}/linuxx64_12201_database.zip"

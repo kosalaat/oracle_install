@@ -1,7 +1,6 @@
-
 ---
 
-oracle_version: 11.2.0
+oracle_version: 11.2.0.4
 
 # Oracle Editions avaialble: EE, SEONE, SE
 oracle_edition: EE
@@ -27,19 +26,29 @@ oracle_db_syspass: password
 
 oracle_db_mem: "400"
 
-oracle_user: oracle
+oracle_user: 
+    - { name: oracle, id: 5001 }
 
 oracle_pass: "!!"
 
-oracle_group: oinstall
+oracle_group: 
+    - { name: oinstall, id: 5100 }
 
-oracle_dba_group: dba
+oracle_dba_group: 
+    - { name: dba, id: 5110 }
 
-oracle_installer_path: /Users/kosala/Downloads
+# FILE_SYSTEM_STORAGE | ASM_STORAGE
+oracle_storage_type: FILE_SYSTEM_STORAGE
 
+oracle_installer_path: /Users/kosala/software
+
+# array  os images avaialbe
 oracle_images:
-    - "{{ oracle_installer_path }}/linux.x64_11gR2_database_1of2.zip"
-    - "{{ oracle_installer_path }}/linux.x64_11gR2_database_2of2.zip"
+    - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_1of2.zip", version: "11.2.0.1" }
+    - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_2of2.zip", version: "11.2.0.1" } 
+    - { image: "{{ oracle_installer_path }}/p13390677_112040_Linux-x86-64_1of7.zip", version: "11.2.0.4" }
+    - { image: "{{ oracle_installer_path }}/p13390677_112040_Linux-x86-64_2of7.zip", version: "11.2.0.4" } 
+    - { image: "{{ oracle_installer_path }}/linuxx64_12201_database.zip", version: "12.2.0.1" }
 
 oracle_pv: /dev/sdb
 
@@ -57,4 +66,8 @@ oracle_data_fs: "{{ oracle_base }}/data"
 oracle_fstype: ext4
 
 # Whether to start Oracle Enterprise Manager DBconsole
-oracle_em: no
+oracle_em: false
+
+oracle_swap_file: "/swapfile"
+
+oracle_swap_size: 200M

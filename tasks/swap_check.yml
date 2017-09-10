@@ -1,0 +1,34 @@
+---
+
+- name: add a swap file
+  command: dd if=/dev/zero of={{ oracle_swap_file }} count={{ oracle_swap_size }} bs=1M 
+    creates="{{ oracle_swap_file }}"
+
+- name: check the swap file
+  command: file {{ oracle_swap_file }} | grep "swap file"
+  register: swapfiletype
+
+- name: mkswap on the swapfile
+  command: mkswap {{ oracle_swap_file }}
+  when: swapfiletype.rc != 0
+
+- name: set the correct permissions
+  file: 
+    path: "{{ oracle_swap_file }}"
+    owner: root
+    group: root
+    mode: 0600
+
+- name: update the fstab for swap file
+  mount:
+  args:
+    name: none
+    src: "{{ oracle_swap_file }}"
+    fstype: swap
+    opts: sw
+    passno: 0
+    dump: 0
+    state: present
+
+- name: mount swap file
+  command: "swapon -a"

@@ -1,5 +1,11 @@
 ---
 
+- name: install the needed packages for lvm operations
+  yum: name={{ item }} state=present
+  with_items:
+    - parted
+    - lvm2
+
 - name: create the partition table for "{{ oracle_vg }}"
   command: parted -s "{{ oracle_pv }}" mklabel gpt mkpart oravg 1G 100% set 1 lvm on quit 
   args:
@@ -61,8 +67,6 @@
   with_items: 
     - "{{ oracle_bin_fs }}"
     - "{{ oracle_data_fs }}"
-    
-# end of spectrum changes
 
 - name: create the oracle installation path
   file:

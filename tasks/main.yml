@@ -33,7 +33,7 @@
   stat: path={{ oracle_tmp }}/database
   register: install_d ir
 
-- include: copy_archives.yml
+#- include: copy_archives.yml
 
 - include: prereqs.yml
 
@@ -44,9 +44,16 @@
 - name: oracle-recommended selinux
   selinux: policy=targeted state=disabled
 
+- name: check whether swap space exisits
+  command: free  | awk ' $1 == "Swap:" {print $2}'
+  register: swapsize
+
+- include: swap_check.yml
+  when: swapsize.stdout > 200000
+
 - name: compose the oracle automated installer settings
   template:
-    src: db_install.rsp.{{ oracle_version }}.j2
+    src: db_install.rsp.{{ oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') }}.j2
     dest: "{{ oracle_tmp }}/db_install.rsp"
     owner: "{{ oracle_user }}"
     group: "{{ oracle_group }}"
