@@ -7,18 +7,12 @@
     - "{{ oracle_dba_group }}"
 
 - name: create oracle user
-  user:
-    name: "{{ oracle_user.name }}"
-    group: "{{ oracle_group.name }}"
-    uid: "{{ oracle_user.id }}"
-    groups: "{{ oracle_dba_group }}"
-    home: /home/{{ oracle_user }}
-    shell: /bin/bash
-    password: "{{ oracle_pass }}"
-    append: yes
-    
+  user: name="{{ item.name }}" group="{{ oracle_group[0].name }}" uid="{{ item.id }}" groups="{{ oracle_dba_group[0].name }}" home="/home/{{ item.name }}" shell=/bin/bash password="{{ oracle_pass }}" append=yes
+  with_items: 
+    - "{{ oracle_user }}"
+
 - name: set oracle user environment
-  lineinfile: dest=/home/{{ oracle_user }}/.bashrc state=present line="{{ item }}"
+  lineinfile: dest=/home/{{ oracle_user[0].name }}/.bashrc state=present line="{{ item }}"
   with_items:
     - "export ORACLE_BASE={{ ora_user_env.ORACLE_BASE }}"
     - "export ORACLE_SID={{ ora_user_env.ORACLE_SID }}"

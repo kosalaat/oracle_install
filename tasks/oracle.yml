@@ -1,11 +1,9 @@
 ---
 
 - name: install oracle
-#  become: yes
-#  become_user : "{{ oracle_user }}"
   environment: "{{ ora_user_env }}"
   shell: |
-    su - {{ oracle_user }} -c "{{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/stderr.err >{{ oracle_tmp }}/stdout.out &
+    su - {{ oracle_user[0].name }} -c "{{ oracle_tmp }}/database/runInstaller -silent -force -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/stderr.err >{{ oracle_tmp }}/stdout.out &
     sleep 30
     while true
     do 
@@ -31,13 +29,28 @@
 - name: db-specific oracle post-installation
   command: "{{ oracle_home }}/root.sh"
 
+- name: configure oracle for 12c only
+  environment: "{{ ora_user_env }}"
+  shell: |
+    su - {{ oracle_user[0].name }} -c "{{ oracle_tmp }}/database/runInstaller -silent --executeConfigTools -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
+    sleep 30
+    while true
+    do 
+      c=$(ps -ef | grep -v grep | grep db_install.rsp | grep java | wc -l)
+      [ $c -eq 0 ] && break
+      sleep 10
+    done
+  args:
+    executable: /bin/bash
+  when: oracle_version | regex_replace ('^([0-9]{1,2}).[0-9]{1,}.[0-9]{1,}(.*)$','\g<1>') == "12.2.0"
+
 - name: touch tnsnames.ora
-  file: path={{ oracle_home }}/network/admin/tnsnames.ora state=touch owner={{ oracle_user }}
+  file: path={{ oracle_home }}/network/admin/tnsnames.ora state=touch owner={{ oracle_user[0].name }}
   when: install_mode == "INSTALL_DB_SWONLY"
 
 - name: start the enterprise manager web console
   become: yes
-  become_user : "{{ oracle_user }}"
+  become_user : "{{ oracle_user[0].name }}"
   environment: "{{ ora_user_env }}" 
   command: "{{ oracle_home }}/bin/emctl start dbconsole"
   ignore_errors: yes
