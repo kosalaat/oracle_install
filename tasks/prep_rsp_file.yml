@@ -36,3 +36,10 @@
     - { regex: oracle.install.db.config.starterdb.password.ALL, value: "{{ oracle_db_syspass }}" }
     - { regex: oracle.install.db.config.starterdb.storageType, value: "{{ oracle_storage_type }}" }
     - { regex: oracle.install.db.config.starterdb.fileSystemStorage.dataLocation, value: "{{ oracle_base }}/data" }
+    - { regex: oracle.install.db.OSDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
+    - { regex: oracle.install.db.OSOPER_GROUP, value: "{{ oracle_dba_group[0].name }}" }
+    - { regex: oracle.install.db.OSBACKUPDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
+    - { regex: oracle.install.db.OSDGDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
+    - { regex: oracle.install.db.OSKMDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
+    - { regex: oracle.install.db.OSRACDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
+    
