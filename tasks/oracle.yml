@@ -42,7 +42,7 @@
     done
   args:
     executable: /bin/bash
-  when: oracle_version | regex_replace ('^([0-9]{1,2}).[0-9]{1,}.[0-9]{1,}(.*)$','\g<1>') == "12.2.0"
+  when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.2.0"
 
 - name: touch tnsnames.ora
   file: path={{ oracle_home }}/network/admin/tnsnames.ora state=touch owner={{ oracle_user[0].name }}
