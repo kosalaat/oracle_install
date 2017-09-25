@@ -4,6 +4,7 @@
   file:
     path: "{{ oracle_tmp }}/database/copied"
   register: unzipped
+  ignore_errors: yes
 
 - name: unzip installer
   unarchive: src="{{ item.image }}" dest="{{ oracle_tmp }}" remote_src=false keep_newer=true 
