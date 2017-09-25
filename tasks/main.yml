@@ -18,22 +18,20 @@
 - include: filesystems.yml
   when: pv.stat.isblk is defined
 
-- name: check enough free space to continue 
-  assert:
-    that:
-      - item.mount == "{{ oracle_bin_fs }}" and item.size_available < 5368709120
-      - item.mount == "{{ oracle_data_fs }}" and item.size_available < 2147483648
-      - item.mount == "{{ oracle_tmp }}" and item.size_available < 5368709120
-  with_items: "{{ ansible_mounts }}"
-  ignore_errors: yes
+#- name: check enough free space to continue 
+#  assert:
+#    that:
+#      - item.mount == "{{ oracle_bin_fs }}" and item.size_available < 5368709120
+#      - item.mount == "{{ oracle_data_fs }}" and item.size_available < 2147483648
+#      - item.mount == "{{ oracle_tmp }}" and item.size_available < 5368709120
+#  with_items: "{{ ansible_mounts }}"
+#  ignore_errors: yes
 
 - include: packages.yml
 
 - name: make sure the installer directory exists
   stat: path={{ oracle_tmp }}/database
   register: install_d ir
-
-- include: copy_archives.yml
 
 - include: prereqs.yml
 
@@ -44,20 +42,24 @@
 - name: oracle-recommended selinux
   selinux: policy=targeted state=disabled
 
-- name: check whether swap space exisits
+- name: check whether swap space exisits (for cloud instances)
   shell: free  | awk ' $1 == "Swap:" {print $2}'
   register: swapsize
 
 - debug: var=swapsize.stdout
 
-- include: swap_check.yml
+- include: swap_check.yml (for cloud instances)
   when: swapsize.stdout > "200000"
 
-- name: compose the oracle automated installer settings
-  template:
-    src: db_install.rsp.{{ oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') }}.j2
-    dest: "{{ oracle_tmp }}/db_install.rsp"
-    owner: "{{ oracle_user[0].name }}"
-    group: "{{ oracle_group[0].name }}"
+#- name: compose the oracle automated installer settings
+#  template:
+#    src: db_install.rsp.{{ oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') }}.j2
+#    dest: "{{ oracle_tmp }}/db_install.rsp"
+#    owner: "{{ oracle_user[0].name }}"
+#    group: "{{ oracle_group[0].name }}"
+
+- include: copy_archives.yml
+
+- include: prep_rsp_file.yml
 
 - include: oracle.yml
