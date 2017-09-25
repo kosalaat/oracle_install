@@ -8,7 +8,7 @@
     group: "{{ oracle_group[0].name }}"
     remote_src: yes
 
-- name: set inline changes
+- name: set inline changes (common)
   lineinfile: 
     path: /tmp/oracle/db_install.rsp
     regexp: "^{{ item.regex }}"
@@ -36,10 +36,19 @@
     - { regex: oracle.install.db.config.starterdb.password.ALL, value: "{{ oracle_db_syspass }}" }
     - { regex: oracle.install.db.config.starterdb.storageType, value: "{{ oracle_storage_type }}" }
     - { regex: oracle.install.db.config.starterdb.fileSystemStorage.dataLocation, value: "{{ oracle_base }}/data" }
+
+
+
+- name: set inline changes (12c)
+  lineinfile: 
+    path: /tmp/oracle/db_install.rsp
+    regexp: "^{{ item.regex }}"
+    line: "{{ item.regex }}={{ item.value }}"
+  with_items:
     - { regex: oracle.install.db.OSDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
     - { regex: oracle.install.db.OSOPER_GROUP, value: "{{ oracle_dba_group[0].name }}" }
     - { regex: oracle.install.db.OSBACKUPDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
     - { regex: oracle.install.db.OSDGDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
     - { regex: oracle.install.db.OSKMDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
     - { regex: oracle.install.db.OSRACDBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
-    
+  when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "12.2.0"
