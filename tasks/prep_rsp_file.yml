@@ -5,7 +5,7 @@
     src: "{{ oracle_tmp }}/database/response/db_install.rsp"
     dest: "{{ oracle_tmp }}/db_install.rsp"
     owner: "{{ oracle_user[0].name }}"
-    group: "{{ oracle_group[0].name }"}
+    group: "{{ oracle_group[0].name }"
     remote_src: yes
 
 - name: set inline changes
