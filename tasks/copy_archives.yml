@@ -1,14 +1,14 @@
 ---
 
 - name: check for the marker
-  file:
+  stat:
     path: "{{ oracle_tmp }}/database/copied"
   register: unzipped
   ignore_errors: yes
 
 - name: unzip installer
   unarchive: src="{{ item.image }}" dest="{{ oracle_tmp }}" remote_src=false keep_newer=true 
-  when: item.version == "{{ oracle_version }}" and unzipped is not defined
+  when: item.version == "{{ oracle_version }}" and unzipped.stat.exists == false
   with_items: "{{ oracle_images }}"
   
 - name: place a marker for the completion
