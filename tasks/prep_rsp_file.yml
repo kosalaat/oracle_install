@@ -23,7 +23,7 @@
     - { regex: ORACLE_HOME, value: "{{ oracle_home }}" }
     - { regex: ORACLE_BASE, value: "{{ oracle_base }}" }
     - { regex: oracle.install.db.InstallEdition, value: "{{ oracle_edition }}" }
-    - { regex: oracle.install.db.isCustomInstall, value: "false" }
+  #  - { regex: oracle.install.db.isCustomInstall, value: "false" }
     - { regex: oracle.install.db.DBA_GROUP, value: "{{ oracle_dba_group[0].name }}" }
     - { regex: oracle.install.db.OPER_GROUP, value: "{{ oracle_dba_group[0].name }}" }
     - { regex: oracle.install.db.config.starterdb.type, value: "GENERAL_PURPOSE" }
@@ -33,7 +33,6 @@
     - { regex: oracle.install.db.config.starterdb.memoryLimit, value: "{{ oracle_db_mem }}" }
     - { regex: oracle.install.db.config.starterdb.memoryOption, value: "true" }
     - { regex: oracle.install.db.config.starterdb.installExampleSchemas, value: "false" }
-    - { regex: oracle.install.db.coableSecuritySettings, value: "true" }
     - { regex: oracle.install.db.config.starterdb.password.ALL, value: "{{ oracle_db_syspass }}" }
     - { regex: oracle.install.db.config.starterdb.storageType, value: "{{ oracle_storage_type }}" }
     - { regex: oracle.install.db.config.starterdb.fileSystemStorage.dataLocation, value: "{{ oracle_base }}/data" }
