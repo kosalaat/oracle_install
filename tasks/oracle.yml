@@ -32,7 +32,7 @@
 - name: configure oracle for 12c only
   environment: "{{ ora_user_env }}"
   shell: |
-    su - {{ oracle_user[0].name }} -c "{{ oracle_tmp }}/database/runInstaller -silent --executeConfigTools -ignoreSysPreReqs -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
+    su - {{ oracle_user[0].name }} -c "{{ oracle_tmp }}/database/runInstaller -silent -executeConfigTools -responseFile {{ oracle_tmp }}/db_install.rsp" 2>{{ oracle_tmp }}/config_stderr.err >{{ oracle_tmp }}/config_stdout.out &
     sleep 30
     while true
     do 

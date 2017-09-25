@@ -24,7 +24,7 @@ oracle_db_name: db
 # password for the sysdba
 oracle_db_syspass: password
 
-oracle_db_mem: "400"
+oracle_db_mem: "450"
 
 oracle_user: 
     - { name: oracle, id: 5001 }
