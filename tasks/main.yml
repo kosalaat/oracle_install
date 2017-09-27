@@ -6,6 +6,12 @@
   register: oracle_installed
   failed_when: oracle_installed.rc == 0
 
+- name: ensure the hostname entry exist in /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    regexp: "^{{ ansible_host }}"
+    line: "{{ ansible_host }} {{inventory_hostname}}"
+
 - name: set the hostname
   hostname: name="{{ inventory_hostname }}"
 

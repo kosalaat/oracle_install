@@ -56,3 +56,22 @@
   ignore_errors: yes
   when: oracle_em
 
+- name: open listener port for rhel 7
+  block:
+    - name: open firewall ports (1521/tcp) for the connector
+      firewalld: port=1521/tcp state=enabled permanent=yes
+    - name: restart firewall
+      service: name=firewalld state=restarted
+  when: ansible_distribution_major_version == "7"
+
+- name: open listener port for rhel 6
+  block:
+    - name: allow connector port (1521/tcp) access
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 1521
+        jump: ACCEPT
+    - name: save iptables settings
+      command: "service iptables save"
+  when: ansible_distribution_major_version == "6"
