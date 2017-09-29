@@ -48,6 +48,13 @@
   file: path={{ oracle_home }}/network/admin/tnsnames.ora state=touch owner={{ oracle_user[0].name }}
   when: install_mode == "INSTALL_DB_SWONLY"
 
+- name: start the listener
+  become: yes
+  become_user : "{{ oracle_user[0].name }}"
+  environment: "{{ ora_user_env }}" 
+  command: "{{ oracle_home }}/bin/lsnrctl start"
+  ignore_errors: yes
+
 - name: start the enterprise manager web console
   become: yes
   become_user : "{{ oracle_user[0].name }}"

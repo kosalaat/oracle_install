@@ -26,8 +26,8 @@
     state: present
   with_items:
     - { lv: "{{ oracle_bin_lv }}", size: 9G }
-    - { lv: "{{ oracle_data_lv }}", size: +100%FREE }
-      
+    - { lv: "{{ oracle_data_lv }}", size: 5G }
+
 - name: create the oracle filesystems 
   filesystem: fstype="{{ oracle_fstype }}" dev="/dev/{{ oracle_vg }}/{{ item }}"
   with_items:

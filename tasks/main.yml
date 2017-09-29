@@ -54,9 +54,9 @@
 
 - debug: var=swapsize.stdout
 
-- name: create swap file (for cloug instances)
+- name: create swap file (for cloud instances)
   include: swap_check.yml
-  when: swapsize.stdout > "200000"
+  when: swapsize.stdout | int < 200000
 
 #- name: compose the oracle automated installer settings
 #  template:
