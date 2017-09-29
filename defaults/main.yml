@@ -70,4 +70,5 @@ oracle_em: false
 
 oracle_swap_file: "/swapfile"
 
-oracle_swap_size: 200M
+# Swap size in MB 
+oracle_swap_size: 200
