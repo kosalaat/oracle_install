@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  remote_user: root
+  become: yes
+  become_method: sudo
+  roles:
+    - oracle_install
+  vars:
+    oracle_edition: EE
+    oracle_version: 12.2.0.1
+    install_mode: INSTALL_DB_SWONLY
+    oracle_installer_path: /home/user/Downloads
+    oracle_images:
+      - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_1of2.zip", version: "11.2.0.1" }
+      - { image: "{{ oracle_installer_path }}/linux.x64_11gR2_database_2of2.zip", version: "11.2.0.1" } 
+      - { image: "{{ oracle_installer_path }}/linuxx64_12201_database.zip", version: "12.2.0.1" }
