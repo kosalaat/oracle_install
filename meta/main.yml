@@ -1,7 +1,6 @@
 galaxy_info:
   author: Kosala Atapattu
   description: Ansible playbook to install Oracle Database 11g and 12c
-  company: -
   license: BSD
   min_ansible_version: 2.3
   galaxy_tags: [oracle, 11g, 12c, CentOS, RedHat, Database]
