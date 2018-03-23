@@ -5,7 +5,8 @@
     creates="{{ oracle_swap_file }}"
 
 - name: check the swap file
-  command: file {{ oracle_swap_file }} | grep "swap file"
+  shell: file {{ oracle_swap_file }} | grep "swap file"
+  ignore_errors: yes
   register: swapfiletype
 
 - name: mkswap on the swapfile
