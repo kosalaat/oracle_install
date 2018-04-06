@@ -41,12 +41,14 @@
 
 - include: prereqs.yml
 
-- name: disable setenforce 
-  command: /usr/sbin/setenforce 0
-  ignore_errors: yes
+- block:
+    - name: disable setenforce 
+      command: /usr/sbin/setenforce 0
+      ignore_errors: yes
 
-- name: oracle-recommended selinux
-  selinux: policy=targeted state=disabled
+    - name: oracle-recommended selinux
+      selinux: policy=targeted state=disabled
+  when: disable_selinux == True
 
 - name: check whether swap space exisits (for cloud instances)
   shell: free  | awk ' $1 == "Swap:" {print $2}'
