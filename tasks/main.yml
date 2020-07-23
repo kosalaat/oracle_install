@@ -37,7 +37,7 @@
 
 - name: make sure the installer directory exists
   stat: path={{ oracle_tmp }}/database
-  register: install_d ir
+  register: install_dir
 
 - include: prereqs.yml
 

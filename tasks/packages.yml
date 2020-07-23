@@ -1,10 +1,14 @@
 ---
 
 - name: install dev tools
-  yum: name="@Development tools" state=present
+  yum: 
+    name: "@Development tools" 
+    state: present
 
 - name: install x86 oracle dependencies for 11g
-  yum: name={{ item }} state=present
+  yum: 
+    name: "{{ item }}"
+    state: present
   with_items:
     - binutils.x86_64
     - compat-libstdc++-33.x86_64
@@ -36,7 +40,9 @@
   when: oracle_version | regex_replace ('^([0-9]{1,2}.[0-9]{1,}.[0-9]{1,})(.*)$','\g<1>') == "11.2.0"
 
 - name: install x86 oracle dependencies for 12c
-  yum: name={{ item }} state=present
+  yum: 
+    name: "{{ item }}" 
+    state: present
   with_items:
     - binutils.x86_64 
     - compat-libcap1.x86_64
