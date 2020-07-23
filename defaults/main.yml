@@ -31,7 +31,7 @@ oracle_user:
 
 oracle_pass: "!!"
 
-oracle_group: 
+oracle_group:   
     - { name: oinstall, id: 5100 }
 
 oracle_dba_group: 
@@ -72,3 +72,6 @@ oracle_swap_file: "/swapfile"
 
 # Swap size in MB 
 oracle_swap_size: 200
+
+# Disable SELinux
+disable_selinux: True
