@@ -48,12 +48,30 @@
   file: path={{ oracle_home }}/network/admin/tnsnames.ora state=touch owner={{ oracle_user[0].name }}
   when: install_mode == "INSTALL_DB_SWONLY"
 
+- name: create the oracle listner service
+  become: yes
+  template:
+    src: "oracle-listener.service.j2"
+    dest: "/usr/lib/systemd/system/oracle-listener.service"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  when: ansible_distribution_major_version == "7"
+
+- name: restart service systemd on centos
+  systemd:
+    state: started
+    daemon_reload: yes
+    name: oracle-listener
+  when: ansible_distribution_major_version == "7"
+
 - name: start the listener
   become: yes
   become_user : "{{ oracle_user[0].name }}"
   environment: "{{ ora_user_env }}" 
   command: "{{ oracle_home }}/bin/lsnrctl start"
   ignore_errors: yes
+  when: ansible_distribution_major_version != "7"
 
 - name: start the enterprise manager web console
   become: yes
