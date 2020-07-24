@@ -1,0 +1,15 @@
+[Unit]
+Description=Oracle Database Startup
+After=syslog.target network.target
+
+[Service]
+Type=forking
+User={{ oracle_user }}
+Group={{ oracle_group }}
+
+Environment=ORACLE_HOME={{ oracle_home }}
+ExecStart={{ oracle_home }}/bin/lsnrctl start
+ExecStop={{ oracle_home }}/bin/lsnrctl stop
+
+[Install]
+WantedBy=multi-user.target
