@@ -4,8 +4,8 @@ After=syslog.target network.target
 
 [Service]
 Type=forking
-User={{ oracle_user }}
-Group={{ oracle_group }}
+User={{ oracle_user[0].name }}
+Group={{ oracle_group[0].name }}
 
 Environment=ORACLE_HOME={{ oracle_home }}
 ExecStart={{ oracle_home }}/bin/lsnrctl start
